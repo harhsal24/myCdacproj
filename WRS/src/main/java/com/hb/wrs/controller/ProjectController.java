@@ -1,6 +1,8 @@
 package com.hb.wrs.controller;
 
+import com.hb.wrs.dto.ProjectDTO;
 import com.hb.wrs.model.Project;
+import com.hb.wrs.service.DTOConverterService;
 import com.hb.wrs.service.ProjectService;
 import com.hb.wrs.service.serviceimpl.ProjectServiceImpl;
 
@@ -25,6 +27,9 @@ public class ProjectController {
     @Autowired
     private ProjectServiceImpl projectServiceImpl;
 
+    @Autowired
+    private DTOConverterService dtoConverterService;
+
     @GetMapping("/{id}")
     public Project getProjectById(@PathVariable Long id) {
         return projectServiceImpl.getProjectById(id);
@@ -47,7 +52,9 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
+    public ResponseEntity<Project> createProject(@RequestBody ProjectDTO projectDTO) {
+        // Convert the ProjectDTO to Project entity and save
+        Project project = dtoConverterService.convertToProjectEntity(projectDTO);
         Project createdProject = projectServiceImpl.createProject(project);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
     }

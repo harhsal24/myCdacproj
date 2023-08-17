@@ -3,6 +3,8 @@ package com.hb.wrs.model;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,9 +28,11 @@ public class WeeklyReport {
     private Long reportId;
 
     @ManyToOne
+    @JsonBackReference
     private Employee employee;
 
     @ManyToOne
+    @JsonBackReference
     private Project project;
 
     @Column(name = "planned_completion_date")

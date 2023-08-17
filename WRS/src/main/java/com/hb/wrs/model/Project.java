@@ -37,12 +37,13 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "team_leader_id",nullable = true)
     private Employee teamLeader;
-    //team leader is also employee ,so it is indirectly employee id
-
 
     @ManyToMany(mappedBy = "projects")
     @JsonManagedReference
     private List<Employee> employees = new ArrayList<>();
 
 
+
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<WeeklyReport> weeklyReports = new ArrayList<>();
 }

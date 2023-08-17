@@ -15,7 +15,7 @@ import lombok.Setter;
 @Table(name = "employees")
 @Getter
 @Setter
-@JsonIgnoreProperties("projects")
+@JsonIgnoreProperties("projects") //avoid circular reference to get all projects
 public class Employee {
     @Override
     public String toString() {
@@ -52,6 +52,8 @@ public class Employee {
     @JsonManagedReference
     private List<Project> projects = new ArrayList<>();
 
-
+    @OneToMany(mappedBy = "employee", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonManagedReference
+    private List<WeeklyReport> weeklyReports = new ArrayList<>();
 
 }
