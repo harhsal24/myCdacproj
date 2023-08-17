@@ -15,6 +15,7 @@ import lombok.Setter;
 @Table(name = "employees")
 @Getter
 @Setter
+@JsonIgnoreProperties("projects")
 public class Employee {
     @Override
     public String toString() {

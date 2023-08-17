@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -20,6 +21,7 @@ import lombok.Setter;
 @Table(name = "projects")
 @Getter
 @Setter
+//@JsonIgnoreProperties("employees")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,14 +35,13 @@ public class Project {
     private String projectType;
 
     @ManyToOne
-    @JoinColumn(name = "team_leader_id")  
+    @JoinColumn(name = "team_leader_id",nullable = true)
     private Employee teamLeader;
     //team leader is also employee ,so it is indirectly employee id
 
 
-
     @ManyToMany(mappedBy = "projects")
-    @JsonBackReference
+    @JsonManagedReference
     private List<Employee> employees = new ArrayList<>();
 
 
