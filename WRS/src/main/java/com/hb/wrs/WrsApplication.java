@@ -30,8 +30,11 @@ public class WrsApplication {
     }
 
     @Bean
-    public CommandLineRunner initData(EmployeeRepository employeeRepository, ProjectRepository projectRepository,
-            WeeklyReportRepository weeklyReportRepository) {
+    public CommandLineRunner initData(
+            EmployeeRepository employeeRepository,
+            ProjectRepository projectRepository,
+            WeeklyReportRepository weeklyReportRepository
+    ) {
         return args -> {
             // Create dummy employees
             Employee employee1 = new Employee();
@@ -51,30 +54,30 @@ public class WrsApplication {
             project1.setProjectName("Project 1");
             project1.setProjectType("Type 1");
             project1.setTeamLeader(employee1);
+            project1.getEmployees().add(employee1); // Add employee1 to project1
             projectRepository.save(project1);
 
             Project project2 = new Project();
             project2.setProjectName("Project 2");
             project2.setProjectType("Type 2");
             project2.setTeamLeader(employee1);
+            project2.getEmployees().add(employee1); // Add employee1 to project2
             projectRepository.save(project2);
 
             Project project3 = new Project();
             project3.setProjectName("Project 3");
             project3.setProjectType("Type 3");
             project3.setTeamLeader(employee2);
+            project3.getEmployees().add(employee2); // Add employee2 to project3
             projectRepository.save(project3);
 
-            // Add employees to projects
-            project1.getEmployees().add(employee1);
-            project1.getEmployees().add(employee2);
-            project2.getEmployees().add(employee1);
-            project3.getEmployees().add(employee2);
+            // Associate employees with projects
+            employee1.getProjects().add(project1);
+            employee1.getProjects().add(project2);
+            employeeRepository.save(employee1);
 
-            // Save projects to update the relationships
-            projectRepository.save(project1);
-            projectRepository.save(project2);
-            projectRepository.save(project3);
+            employee2.getProjects().add(project3);
+            employeeRepository.save(employee2);
 
             // Create dummy weekly reports
             WeeklyReport report1 = new WeeklyReport();

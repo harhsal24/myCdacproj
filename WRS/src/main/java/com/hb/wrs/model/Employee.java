@@ -6,15 +6,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -49,11 +42,15 @@ public class Employee {
         REGULAR_EMPLOYEE
     }
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "employee_project",
+            joinColumns = @JoinColumn(name = "emp_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    @JsonManagedReference
     private List<Project> projects = new ArrayList<>();
 
-    // @ManyToMany(mappedBy = "employees")
-    // @JsonBackReference
-    // @JsonIgnoreProperties("employees") // Add this annotation
-    // private List<Project> projects = new ArrayList<>();
+
+
 }

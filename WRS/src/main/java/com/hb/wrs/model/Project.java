@@ -3,26 +3,16 @@ package com.hb.wrs.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.*;
 
 // import com.fasterxml.jackson.annotation.JsonBackReference;
 // import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 // import jakarta.persistence.JoinTable;
 // import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,23 +35,13 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "team_leader_id")  
     private Employee teamLeader;
-    //team leader is also employee so it is indirectly employee id
+    //team leader is also employee ,so it is indirectly employee id
 
 
 
- @ManyToMany(mappedBy = "projects",cascade = CascadeType.ALL )
+    @ManyToMany(mappedBy = "projects")
+    @JsonBackReference
     private List<Employee> employees = new ArrayList<>();
-
-
-
-//  @ManyToMany
-//     @JoinTable(
-//         name = "project_employee",
-//         joinColumns = @JoinColumn(name = "project_id"),
-//         inverseJoinColumns = @JoinColumn(name = "employee_id")
-//     )
-//     @JsonManagedReference
-//     private List<Employee> employees = new ArrayList<>();
 
 
 }
