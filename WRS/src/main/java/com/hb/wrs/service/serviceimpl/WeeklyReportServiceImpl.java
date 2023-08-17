@@ -3,6 +3,7 @@ package com.hb.wrs.service.serviceimpl;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.hb.wrs.dto.WeeklyReportDTO;
 import com.hb.wrs.model.Project;
 import com.hb.wrs.model.WeeklyReport;
 import com.hb.wrs.repository.ProjectRepository;
@@ -63,15 +64,26 @@ public class WeeklyReportServiceImpl implements WeeklyReportService {
     }
 
     @Override
-    public WeeklyReport updateWeeklyReport(Long reportId, WeeklyReport updatedReport) {
+    public WeeklyReport updateWeeklyReport(Long reportId, WeeklyReportDTO updatedReportDTO) {
         WeeklyReport existingReport = weeklyReportRepository.findById(reportId)
                 .orElseThrow(() -> new NoSuchElementException("Weekly Report not found"));
 
-        existingReport.setPlannedCompletionDate(updatedReport.getPlannedCompletionDate());
-        existingReport.setActualCompletionDate(updatedReport.getActualCompletionDate());
-        existingReport.setDeliverables(updatedReport.getDeliverables());
+        // Update the existing report with data from the DTO
+        existingReport.setPlannedCompletionDate(updatedReportDTO.getPlannedCompletionDate());
+        existingReport.setActualCompletionDate(updatedReportDTO.getActualCompletionDate());
+        existingReport.setDeliverables(updatedReportDTO.getDeliverables());
+
+        // You might need to handle updating other properties here
 
         return weeklyReportRepository.save(existingReport);
     }
+
+
+
+    @Override
+    public WeeklyReport getWeeklyReportById(Long reportId) {
+        return weeklyReportRepository.findById(reportId).orElse(null);
+    }
+
 }
 

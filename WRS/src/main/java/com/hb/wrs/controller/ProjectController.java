@@ -60,12 +60,17 @@ public class ProjectController {
     }
 
     @PutMapping("/{projectId}")
-    public ResponseEntity<Project> updateProject(@PathVariable Long projectId, @RequestBody Project project) {
+    public ResponseEntity<Project> updateProject(@PathVariable Long projectId, @RequestBody ProjectDTO projectDTO) {
         Project existingProject = projectServiceImpl.getProjectById(projectId);
+
         if (existingProject != null) {
-            project.setProjectId(projectId);
-            Project updatedProject = projectServiceImpl.updateProject(project);
-            return ResponseEntity.ok(updatedProject);
+            // Convert the ProjectDTO to Project entity and update the existing project
+            Project updatedProject = dtoConverterService.convertToProjectEntity(projectDTO);
+            updatedProject.setProjectId(projectId);
+
+            Project savedProject = projectServiceImpl.updateProject(updatedProject);
+
+            return ResponseEntity.ok(savedProject);
         } else {
             return ResponseEntity.notFound().build();
         }

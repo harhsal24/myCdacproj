@@ -3,6 +3,7 @@ package com.hb.wrs.service;
 import java.util.Date;
 import java.util.List;
 
+import com.hb.wrs.dto.WeeklyReportDTO;
 import com.hb.wrs.model.WeeklyReport;
 
 public interface WeeklyReportService {
@@ -21,5 +22,8 @@ public interface WeeklyReportService {
 
     void deleteWeeklyReport(Long reportId);
 
-    WeeklyReport updateWeeklyReport(Long reportId, WeeklyReport updatedReport);
+    WeeklyReport updateWeeklyReport(Long reportId, WeeklyReportDTO updatedReportDTO);
+
+    WeeklyReport getWeeklyReportById(Long reportId);
+
 }

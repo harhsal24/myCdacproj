@@ -54,10 +54,13 @@ public class WeeklyReportController {
 
     @PutMapping("/{reportId}")
     public ResponseEntity<WeeklyReport> updateWeeklyReport(
-            @PathVariable Long reportId, @RequestBody WeeklyReport updatedReport) {
-        WeeklyReport updated = weeklyReportService.updateWeeklyReport(reportId, updatedReport);
-        return ResponseEntity.ok(updated);
+            @PathVariable Long reportId, @RequestBody WeeklyReportDTO updatedReportDTO) {
+        WeeklyReport updatedReport = weeklyReportService.updateWeeklyReport(reportId, updatedReportDTO);
+        return ResponseEntity.ok(updatedReport);
     }
+
+
+
 
     @DeleteMapping("/{reportId}")
     public ResponseEntity<Void> deleteWeeklyReport(@PathVariable Long reportId) {
