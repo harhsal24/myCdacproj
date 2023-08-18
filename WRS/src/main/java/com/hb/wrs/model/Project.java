@@ -1,49 +1,39 @@
 package com.hb.wrs.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import jakarta.persistence.*;
-
-// import com.fasterxml.jackson.annotation.JsonBackReference;
-// import com.fasterxml.jackson.annotation.JsonIgnore;
-
-// import jakarta.persistence.JoinTable;
-// import jakarta.persistence.ManyToMany;
-import lombok.Getter;
-import lombok.Setter;
-
-@Entity
-@Table(name = "projects")
 @Getter
 @Setter
-//@JsonIgnoreProperties("employees")
+@NoArgsConstructor
+@Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "projectId")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "project_id")
     private Long projectId;
 
-    @Column(name = "project_name")
     private String projectName;
 
-    @Column(name = "project_type")
-    private String projectType;
-
     @ManyToOne
-    @JoinColumn(name = "team_leader_id",nullable = true)
+    @JoinColumn(name = "team_leader_id")
     private Employee teamLeader;
 
-    @ManyToMany(mappedBy = "projects")
-    @JsonManagedReference
+    @ManyToMany
+    @JoinTable(
+            name = "project_employee",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id")
+    )
     private List<Employee> employees = new ArrayList<>();
 
-
-
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "project")
     private List<WeeklyReport> weeklyReports = new ArrayList<>();
 }

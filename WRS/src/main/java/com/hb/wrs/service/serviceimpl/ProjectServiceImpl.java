@@ -1,23 +1,21 @@
-package com.hb.wrs.service.serviceimpl;
+package com.hb.wrs.service;
 
 import com.hb.wrs.model.Project;
 import com.hb.wrs.repository.ProjectRepository;
-import com.hb.wrs.service.ProjectService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    @Autowired
-    private ProjectRepository projectRepository;
+    private final ProjectRepository projectRepository;
 
-    @Override
-    public Project getProjectById(Long projectId) {
-        return projectRepository.findById(projectId).orElse(null);
+    @Autowired
+    public ProjectServiceImpl(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
     }
 
     @Override
@@ -26,27 +24,27 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getProjectsByTeamLeaderId(Long teamLeaderId) {
-
-        return projectRepository.findByTeamLeaderEmpId(teamLeaderId);
+    public Project getProjectById(Long projectId) {
+        return projectRepository.findById(projectId).orElse(null);
     }
 
     @Override
-    public List<Project> getProjectsByEmployeeId(Long employeeId) {
-        return projectRepository.findByEmployeesEmpId(employeeId);
-    }
-
     public Project createProject(Project project) {
         return projectRepository.save(project);
     }
 
+    @Override
+    public Project updateProject(Long projectId, Project project) {
+        Optional<Project> existingProject = projectRepository.findById(projectId);
+        if (existingProject.isPresent()) {
+            project.setProjectId(projectId); // Make sure the ID is set
+            return projectRepository.save(project);
+        }
+        return null; // Project not found
+    }
 
+    @Override
     public void deleteProject(Long projectId) {
         projectRepository.deleteById(projectId);
     }
-
-    public Project updateProject(Project project) {
-        return projectRepository.save(project);
-    }
-    
 }

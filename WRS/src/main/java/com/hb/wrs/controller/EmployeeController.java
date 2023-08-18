@@ -1,43 +1,60 @@
 package com.hb.wrs.controller;
 
+import com.hb.wrs.model.Employee;
+import com.hb.wrs.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.hb.wrs.model.Employee;
-import com.hb.wrs.service.EmployeeService;
-import com.hb.wrs.service.serviceimpl.EmployeeServiceImpl;
+import java.util.List;
 
 @RestController
+@RequestMapping("/employees")
 public class EmployeeController {
 
+    private final EmployeeService employeeService;
+
     @Autowired
-    private EmployeeServiceImpl employeeServiceImpl;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
-    @PostMapping("/employees")
+    @GetMapping
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        return new ResponseEntity<>(employees, HttpStatus.OK);
+    }
+
+    @GetMapping("/{empId}")
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long empId) {
+        Employee employee = employeeService.getEmployeeById(empId);
+        if (employee != null) {
+            return new ResponseEntity<>(employee, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-        System.out.println(employee);
-        Employee createdEmployee = employeeServiceImpl.createEmployee(employee);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
+        Employee newEmployee = employeeService.createEmployee(employee);
+        return new ResponseEntity<>(newEmployee, HttpStatus.CREATED);
     }
 
-    @PutMapping("/employees/{employeeId}")
-    public ResponseEntity<Employee> updateEmployee(
-            @PathVariable Long employeeId, @RequestBody Employee updatedEmployee) {
-        Employee updated = employeeServiceImpl.updateEmployee(employeeId, updatedEmployee);
-        return ResponseEntity.ok(updated);
+    @PutMapping("/{empId}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long empId, @RequestBody Employee employee) {
+        Employee updatedEmployee = employeeService.updateEmployee(empId, employee);
+        if (updatedEmployee != null) {
+            return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
-    @DeleteMapping("/employees/{employeeId}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long employeeId) {
-        employeeServiceImpl.deleteEmployee(employeeId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{empId}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long empId) {
+        employeeService.deleteEmployee(empId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    
 }

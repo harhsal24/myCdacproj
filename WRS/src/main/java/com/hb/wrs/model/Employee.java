@@ -1,59 +1,38 @@
 package com.hb.wrs.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.hb.wrs.util.Role;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
-@Entity
-@Table(name = "employees")
 @Getter
 @Setter
-@JsonIgnoreProperties("projects") //avoid circular reference to get all projects
+@NoArgsConstructor
+@Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "empId")
 public class Employee {
-    @Override
-    public String toString() {
-        return "Employee [empId=" + empId + ", name=" + name + ", designation=" + designation + ", role=" + role
-                + ", projects=" + projects + "]";
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long empId;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "designation")
-    private String designation;
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
     private Role role;
 
-    public enum Role {
-        SUPER_ADMIN,
-        TEAM_LEADER,
-        REGULAR_EMPLOYEE
-    }
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private Employee manager;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "employee_project",
-            joinColumns = @JoinColumn(name = "emp_id"),
-            inverseJoinColumns = @JoinColumn(name = "project_id")
-    )
-    @JsonManagedReference
+    @ManyToMany(mappedBy = "employees")
     private List<Project> projects = new ArrayList<>();
 
-    @OneToMany(mappedBy = "employee", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JsonManagedReference
+    @OneToMany(mappedBy = "employee")
     private List<WeeklyReport> weeklyReports = new ArrayList<>();
-
 }

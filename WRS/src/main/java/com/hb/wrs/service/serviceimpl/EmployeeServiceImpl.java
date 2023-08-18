@@ -1,36 +1,50 @@
-package com.hb.wrs.service.serviceimpl;
-
-import java.util.NoSuchElementException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package com.hb.wrs.service;
 
 import com.hb.wrs.model.Employee;
 import com.hb.wrs.repository.EmployeeRepository;
-import com.hb.wrs.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    @Autowired
-    EmployeeRepository employeeRepository;
 
+    private final EmployeeRepository employeeRepository;
+
+    @Autowired
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
+    @Override
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
+    }
+
+    @Override
+    public Employee getEmployeeById(Long empId) {
+        return employeeRepository.findById(empId).orElse(null);
+    }
+
+    @Override
     public Employee createEmployee(Employee employee) {
         return employeeRepository.save(employee);
     }
 
     @Override
-    public void deleteEmployee(Long employeeId) {
-        employeeRepository.deleteById(employeeId);
+    public Employee updateEmployee(Long empId, Employee employee) {
+        Optional<Employee> existingEmployee = employeeRepository.findById(empId);
+        if (existingEmployee.isPresent()) {
+            employee.setEmpId(empId); // Make sure the ID is set
+            return employeeRepository.save(employee);
+        }
+        return null; // Employee not found
     }
-     public Employee updateEmployee(Long employeeId, Employee updatedEmployee) {
-        Employee existingEmployee = employeeRepository.findById(employeeId)
-            .orElseThrow(() -> new NoSuchElementException("Employee not found"));
-    
-        // Update the fields of the existing employee
-        existingEmployee.setName(updatedEmployee.getName());
-        existingEmployee.setDesignation(updatedEmployee.getDesignation());
-        existingEmployee.setRole(updatedEmployee.getRole());
-    
-        return employeeRepository.save(existingEmployee);
+
+    @Override
+    public void deleteEmployee(Long empId) {
+        employeeRepository.deleteById(empId);
     }
 }
