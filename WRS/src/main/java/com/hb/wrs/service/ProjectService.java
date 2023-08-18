@@ -1,21 +1,17 @@
 package com.hb.wrs.service;
 
-import java.util.List;
-
 import com.hb.wrs.model.Project;
 
-public interface ProjectService {
-    Project getProjectById(Long projectId);
+import java.util.List;
 
+public interface ProjectService {
     List<Project> getAllProjects();
 
-    List<Project> getProjectsByTeamLeaderId(Long teamLeaderId);
-
-    List<Project> getProjectsByEmployeeId(Long employeeId);
+    Project getProjectById(Long projectId);
 
     Project createProject(Project project);
 
-    void deleteProject(Long projectId);
+    Project updateProject(Long projectId, Project project);
 
-    Project updateProject(Project project);
+    void deleteProject(Long projectId);
 }

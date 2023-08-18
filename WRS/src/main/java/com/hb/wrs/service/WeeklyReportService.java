@@ -1,29 +1,24 @@
 package com.hb.wrs.service;
 
-import java.util.Date;
-import java.util.List;
-
 import com.hb.wrs.dto.WeeklyReportDTO;
-import com.hb.wrs.model.WeeklyReport;
+
+import java.util.List;
 
 public interface WeeklyReportService {
 
-    List<WeeklyReport> getAllReportsOrderByDateDesc();
+    List<WeeklyReportDTO> getAllReportsOrderByDateDesc();
 
-    List<WeeklyReport> getAllReportsByEmployeeId(Long employeeId);
+    List<WeeklyReportDTO> getReportsByEmployeeIdOrderByReportCreatedDateTimeDesc(Long employeeId);
 
-    List<WeeklyReport> getReportsByEmployeeIdOrderByReportCreatedDateTimeDesc(Long employeeId);
+    List<WeeklyReportDTO> getReportsByTeamLeaderIdOrderByReportCreatedDateTimeDesc(Long teamLeaderId);
 
-    List<WeeklyReport> getReportsByTeamLeaderIdOrderByReportCreatedDateTimeDesc(Long teamLeaderId);
+    List<WeeklyReportDTO> getReportsByProjectIdOrderByReportCreatedDateTimeDesc(Long projectId);
 
-    List<WeeklyReport> getReportsByProjectIdOrderByReportCreatedDateTimeDesc(Long projectId);
-
-    WeeklyReport createWeeklyReport(WeeklyReport weeklyReport);
+    WeeklyReportDTO createWeeklyReport(WeeklyReportDTO weeklyReportDTO);
 
     void deleteWeeklyReport(Long reportId);
 
-    WeeklyReport updateWeeklyReport(Long reportId, WeeklyReportDTO updatedReportDTO);
+    WeeklyReportDTO updateWeeklyReport(Long reportId, WeeklyReportDTO updatedReportDTO);
 
-    WeeklyReport getWeeklyReportById(Long reportId);
-
+    WeeklyReportDTO getWeeklyReportById(Long reportId);
 }
