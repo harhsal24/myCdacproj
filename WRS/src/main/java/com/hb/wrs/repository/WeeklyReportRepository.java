@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import com.hb.wrs.model.WeeklyReport;
 
 public interface WeeklyReportRepository extends JpaRepository<WeeklyReport, Long> {
+
+
+
     @Query("SELECT r FROM WeeklyReport r ORDER BY r.reportCreatedDateTime DESC")
     List<WeeklyReport> findAllByOrderByReportCreatedDateTimeDesc();
 

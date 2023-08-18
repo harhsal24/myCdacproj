@@ -1,7 +1,6 @@
 package com.hb.wrs.controller;
 
 import com.hb.wrs.dto.WeeklyReportDTO;
-import com.hb.wrs.model.WeeklyReport;
 import com.hb.wrs.service.WeeklyReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ public class WeeklyReportController {
         List<WeeklyReportDTO> reports = weeklyReportService.getReportsByEmployeeIdOrderByReportCreatedDateTimeDesc(employeeId);
         return ResponseEntity.ok(reports);
     }
-
 
     @GetMapping("/teamleader/{teamLeaderId}")
     public ResponseEntity<List<WeeklyReportDTO>> getReportsByTeamLeaderId(@PathVariable Long teamLeaderId) {
@@ -70,5 +68,12 @@ public class WeeklyReportController {
     public ResponseEntity<Void> deleteWeeklyReport(@PathVariable Long reportId) {
         weeklyReportService.deleteWeeklyReport(reportId);
         return ResponseEntity.noContent().build();
+    }
+
+    // Add exception handling for any specific exceptions that may occur
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+        // Customize the error message and status code based on the exception
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
     }
 }

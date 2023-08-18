@@ -1,5 +1,7 @@
+// EmployeeController.java
 package com.hb.wrs.controller;
 
+import com.hb.wrs.dto.EmployeeDTO;
 import com.hb.wrs.model.Employee;
 import com.hb.wrs.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,30 +23,30 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAllEmployees() {
-        List<Employee> employees = employeeService.getAllEmployees();
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
+        List<EmployeeDTO> employees = employeeService.getAllEmployees();
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
     @GetMapping("/{empId}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long empId) {
-        Employee employee = employeeService.getEmployeeById(empId);
-        if (employee != null) {
-            return new ResponseEntity<>(employee, HttpStatus.OK);
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long empId) {
+        EmployeeDTO employeeDTO = employeeService.getEmployeeById(empId);
+        if (employeeDTO != null) {
+            return new ResponseEntity<>(employeeDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-        Employee newEmployee = employeeService.createEmployee(employee);
+    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        EmployeeDTO newEmployee = employeeService.createEmployee(employeeDTO);
         return new ResponseEntity<>(newEmployee, HttpStatus.CREATED);
     }
 
     @PutMapping("/{empId}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long empId, @RequestBody Employee employee) {
-        Employee updatedEmployee = employeeService.updateEmployee(empId, employee);
+    public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long empId, @RequestBody EmployeeDTO employeeDTO) {
+        EmployeeDTO updatedEmployee = employeeService.updateEmployee(empId, employeeDTO);
         if (updatedEmployee != null) {
             return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
         } else {
@@ -57,4 +59,10 @@ public class EmployeeController {
         employeeService.deleteEmployee(empId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+    }
 }
+

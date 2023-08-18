@@ -75,21 +75,27 @@ public class WeeklyReportServiceImpl implements WeeklyReportService {
     public WeeklyReportDTO createWeeklyReport(WeeklyReportDTO weeklyReportDTO) {
         WeeklyReport weeklyReport = mapDTOToWeeklyReport(weeklyReportDTO);
 
-        // Fetch the employee using the employeeId from the DTO
         Employee employee = employeeRepository.findById(weeklyReportDTO.getEmployeeId())
                 .orElseThrow(() -> new NoSuchElementException("Employee not found"));
         weeklyReport.setEmployee(employee);
 
-        Project project = weeklyReport.getProject();
-
-        if (project != null && project.getProjectId() == null) {
-            projectRepository.save(project);
-            weeklyReport.setProject(project);
-        }
+        Project project = projectRepository.findById(weeklyReportDTO.getProjectId())
+                .orElseThrow(() -> new NoSuchElementException("Project not found"));
+        weeklyReport.setProject(project);
 
         WeeklyReport createdReport = weeklyReportRepository.save(weeklyReport);
-        return mapWeeklyReportToDTO(createdReport);
+
+        weeklyReportDTO.setReportId(createdReport.getReportId());
+
+        return weeklyReportDTO;
     }
+
+
+
+
+
+
+
 
 
 
@@ -103,20 +109,12 @@ public class WeeklyReportServiceImpl implements WeeklyReportService {
         WeeklyReport existingReport = weeklyReportRepository.findById(reportId)
                 .orElseThrow(() -> new NoSuchElementException("Weekly Report not found"));
 
-        // Update the existing report with data from the DTO
-//        existingReport.setPlannedCompletionDate(updatedReportDTO.getPlannedCompletionDate());
-//        existingReport.setActualCompletionDate(updatedReportDTO.getActualCompletionDate());
-//        existingReport.setDeliverables(updatedReportDTO.getDeliverables());
-//        existingReport.setNoOfHours(updatedReportDTO.getNoOfHours());
-//        existingReport.setRemark(updatedReportDTO.getRemark());
-//        existingReport.setActivity(updatedReportDTO.getActivity());
-//        existingReport.setPointsForDiscussion(updatedReportDTO.getPointsForDiscussion());
-//        existingReport.setExpectedActivitiesOfUpcomingWeek(updatedReportDTO.getExpectedActivitiesOfUpcomingWeek());
-//        existingReport.setReportStatus(updatedReportDTO.getReportStatus());
+        existingReport.setReportCreatedDateTime(updatedReportDTO.getReportCreatedDateTime());
 
         WeeklyReport updatedReport = weeklyReportRepository.save(existingReport);
         return mapWeeklyReportToDTO(updatedReport);
     }
+
 
     @Override
     public WeeklyReportDTO getWeeklyReportById(Long reportId) {
@@ -129,25 +127,11 @@ public class WeeklyReportServiceImpl implements WeeklyReportService {
 
     private WeeklyReportDTO mapWeeklyReportToDTO(WeeklyReport report) {
         WeeklyReportDTO reportDTO = new WeeklyReportDTO();
-
-        if (report.getEmployee() != null) {
-            reportDTO.setEmployeeId(report.getEmployee().getEmpId());
-        }
-
-        if (report.getProject() != null) {
-            reportDTO.setProjectId(report.getProject().getProjectId());
-        }
-
-//        reportDTO.setPlannedCompletionDate(report.getPlannedCompletionDate());
-//        reportDTO.setActualCompletionDate(report.getActualCompletionDate());
-//        reportDTO.setDeliverables(report.getDeliverables());
-//        reportDTO.setNoOfHours(report.getNoOfHours());
-//        reportDTO.setRemark(report.getRemark());
-//        reportDTO.setActivity(report.getActivity());
-//        reportDTO.setPointsForDiscussion(report.getPointsForDiscussion());
-//        reportDTO.setExpectedActivitiesOfUpcomingWeek(report.getExpectedActivitiesOfUpcomingWeek());
-//        reportDTO.setReportStatus(report.getReportStatus());
-
+        reportDTO.setReportId(report.getReportId());
+        reportDTO.setEmployeeId(report.getEmployee().getEmpId());
+        reportDTO.setProjectId(report.getProject().getProjectId());
+        reportDTO.setReportCreatedDateTime(report.getReportCreatedDateTime());
+        // Set other fields as needed
         return reportDTO;
     }
 

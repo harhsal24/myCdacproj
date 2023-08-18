@@ -12,9 +12,7 @@ import java.util.List;
 public class ProjectDTO {
     private Long projectId;
     private String projectName;
-    private String projectType;
-    private LocalDate startDate;
-    private LocalDate expectedEndDate;
-    private Long teamLeaderId;
-    private List<Long> employeeIds;
+    private Long teamLeaderId; // Use this to map team leader's empId
+    private List<Long> employeeIds; // Use this to map employee's empIds
+    // Other fields, getters, setters
 }

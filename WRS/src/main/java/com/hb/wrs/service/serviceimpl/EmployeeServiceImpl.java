@@ -1,12 +1,16 @@
-package com.hb.wrs.service;
+// EmployeeServiceImpl.java
+package com.hb.wrs.service.serviceimpl;
 
+import com.hb.wrs.dto.EmployeeDTO;
 import com.hb.wrs.model.Employee;
 import com.hb.wrs.repository.EmployeeRepository;
+import com.hb.wrs.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -19,32 +23,60 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeDTO> getAllEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees.stream()
+                .map(this::mapEmployeeToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Employee getEmployeeById(Long empId) {
-        return employeeRepository.findById(empId).orElse(null);
-    }
-
-    @Override
-    public Employee createEmployee(Employee employee) {
-        return employeeRepository.save(employee);
-    }
-
-    @Override
-    public Employee updateEmployee(Long empId, Employee employee) {
-        Optional<Employee> existingEmployee = employeeRepository.findById(empId);
-        if (existingEmployee.isPresent()) {
-            employee.setEmpId(empId); // Make sure the ID is set
-            return employeeRepository.save(employee);
+    public EmployeeDTO getEmployeeById(Long empId) {
+        Employee employee = employeeRepository.findById(empId).orElse(null);
+        if (employee != null) {
+            return mapEmployeeToDTO(employee);
         }
-        return null; // Employee not found
+        return null;
+    }
+
+    @Override
+    public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = mapDTOToEmployee(employeeDTO);
+        Employee createdEmployee = employeeRepository.save(employee);
+        return mapEmployeeToDTO(createdEmployee);
+    }
+
+    @Override
+    public EmployeeDTO updateEmployee(Long empId, EmployeeDTO employeeDTO) {
+        Employee existingEmployee = employeeRepository.findById(empId).orElse(null);
+        if (existingEmployee == null) {
+            return null;
+        }
+
+        Employee updatedEmployee = mapDTOToEmployee(employeeDTO);
+        updatedEmployee.setEmpId(empId);
+        Employee savedEmployee = employeeRepository.save(updatedEmployee);
+        return mapEmployeeToDTO(savedEmployee);
     }
 
     @Override
     public void deleteEmployee(Long empId) {
         employeeRepository.deleteById(empId);
+    }
+
+    private EmployeeDTO mapEmployeeToDTO(Employee employee) {
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+        employeeDTO.setEmpId(employee.getEmpId());
+        employeeDTO.setName(employee.getName());
+        employeeDTO.setManagerId(employee.getManager() != null ? employee.getManager().getEmpId() : null);
+        // Map other properties as needed
+        return employeeDTO;
+    }
+
+    private Employee mapDTOToEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        employee.setName(employeeDTO.getName());
+        // Map other properties as needed
+        return employee;
     }
 }

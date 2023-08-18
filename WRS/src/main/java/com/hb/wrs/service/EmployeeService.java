@@ -1,17 +1,18 @@
 package com.hb.wrs.service;
 
+import com.hb.wrs.dto.EmployeeDTO;
 import com.hb.wrs.model.Employee;
 
 import java.util.List;
 
 public interface EmployeeService {
-    List<Employee> getAllEmployees();
+    List<EmployeeDTO> getAllEmployees();
 
-    Employee getEmployeeById(Long empId);
+    EmployeeDTO getEmployeeById(Long empId);
 
-    Employee createEmployee(Employee employee);
+    EmployeeDTO createEmployee(EmployeeDTO employeeDTO);
 
-    Employee updateEmployee(Long empId, Employee employee);
+    EmployeeDTO updateEmployee(Long empId, EmployeeDTO employeeDTO);
 
     void deleteEmployee(Long empId);
 }
